@@ -12,6 +12,8 @@ using RestaurantPOS.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RestaurantPOS.Data.Entities;
+using RestaurantPOS.Services;
 
 namespace RestaurantPOS
 {
@@ -30,8 +32,18 @@ namespace RestaurantPOS
             services.AddDbContext<RestaurantDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+            
+            // Add Identity
+            services.AddIdentity<Customer, IdentityRole<Guid>>()
+                .AddEntityFrameworkStores<RestaurantDbContext>()
+                .AddDefaultTokenProviders();
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            // Register Dependence Injection (DI)
+            services.AddTransient<ICustomerService, CustomerService>();
+            services.AddTransient<SignInManager<Customer>, SignInManager<Customer>>();
+            services.AddTransient<UserManager<Customer>, UserManager<Customer>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

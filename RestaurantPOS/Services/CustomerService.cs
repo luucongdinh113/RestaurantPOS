@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace RestaurantPOS.Services
 {
@@ -65,6 +67,22 @@ namespace RestaurantPOS.Services
         public async Task SignOutAsync()
         {
             await _signInManager.SignOutAsync();
+        }
+        public async Task<List<TableHistoryViewModel>> GetTableHistoryAsync(ClaimsPrincipal user)
+        {
+            var customer = await _userManager.GetUserAsync(user);
+            var tableOrderHistory = await (from f in _context.OderTable
+                                           join g in _context.Table on f.TableId equals g.Id
+                                           where f.CustomerId == customer.Id
+                                           select new TableHistoryViewModel
+                                           {
+                                               Id = f.Id,
+                                               From = f.From,
+                                               To = f.To,
+                                               TableName = g.Name,
+                                               PeopleCount = g.PeopleCount,
+                                           }).ToListAsync();
+            return tableOrderHistory;
         }
     }
 }

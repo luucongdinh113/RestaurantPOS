@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using RestaurantPOS.Models;
 using RestaurantPOS.Services;
 using System.Security.Claims;
+using RestaurantManagement.Models;
 
 namespace RestaurantPOS.Controllers
 {
@@ -84,6 +85,22 @@ namespace RestaurantPOS.Controllers
                 return RedirectToAction("Login", "Home");
             var TbHistory = await _customerService.GetTableHistoryAsync(User);
             return View(TbHistory);
+        }
+
+        [HttpGet("/Payment")]
+        public async Task<IActionResult> Payment()
+        {
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToAction("Login", "Home");
+            var payment = await _customerService.GetBillToPayAsync(User);
+            return View(payment);
+        }
+
+        [HttpPost("/Payment")]
+        public async Task<IActionResult> Payment(PaymentViewModel billPaymentVM)
+        {
+            await _customerService.UpdatePaymentMethodAsync(User, billPaymentVM);
+            return RedirectToAction("MenuFood", "Menu");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

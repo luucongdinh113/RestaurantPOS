@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RestaurantPOS.Models;
 using RestaurantPOS.Services;
+using System.Security.Claims;
 
 namespace RestaurantPOS.Controllers
 {
@@ -76,6 +77,13 @@ namespace RestaurantPOS.Controllers
         {
             await _customerService.SignOutAsync();
             return RedirectToAction("Index");
+        }
+        public async Task<IActionResult> TableOrderedHistory()
+        {
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToAction("Login", "Home");
+            var TbHistory = await _customerService.GetTableHistoryAsync(User);
+            return View(TbHistory);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

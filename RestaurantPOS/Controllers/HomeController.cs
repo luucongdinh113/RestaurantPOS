@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using RestaurantPOS.Models;
 using RestaurantPOS.Services;
 using System.Security.Claims;
-using RestaurantManagement.Models;
+using RestaurantPOS.Models;
 
 namespace RestaurantPOS.Controllers
 {
@@ -73,6 +73,7 @@ namespace RestaurantPOS.Controllers
 
             return RedirectToAction("Login");
         }
+
         [Route("Logout")]
         public async Task<IActionResult> Logout()
         {
@@ -85,6 +86,29 @@ namespace RestaurantPOS.Controllers
                 return RedirectToAction("Login", "Home");
             var TbHistory = await _customerService.GetTableHistoryAsync(User);
             return View(TbHistory);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ShowToCart()
+        {
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToAction("Login", "Home");
+            var cart = await _customerService.ShowToCartAsync(User);
+            return View(cart);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ShowToCart(CartDetailViewModel cartdetailvm)
+        {
+            if (cartdetailvm.Type == "-")
+            {
+                cartdetailvm.Quantity--;
+            }
+            if (cartdetailvm.Type == "+")
+            {
+                cartdetailvm.Quantity++;
+            }
+            var cart = await _customerService.ShowToCartAsync(User, cartdetailvm);
+            return View(cart);
         }
 
         [HttpGet("/Payment")]

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RestaurantManagement.Models
+namespace RestaurantPOS.Models
 {
 
     public class BillViewModel

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using RestaurantPOS.Models;
 using RestaurantPOS.Services;
+using System.Security.Claims;
 using System.Diagnostics;
 using System.Threading.Tasks;
 

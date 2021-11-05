@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace RestaurantPOS.Services
 {
@@ -70,6 +72,8 @@ namespace RestaurantPOS.Services
         public async Task<List<TableHistoryViewModel>> GetTableHistoryAsync(ClaimsPrincipal user)
         {
             var customer = await _userManager.GetUserAsync(user);
+            if (customer == null)
+                return new List<TableHistoryViewModel>();
             var tableOrderHistory = await (from f in _context.OderTable
                                            join g in _context.Table on f.TableId equals g.Id
                                            where f.CustomerId == customer.Id
@@ -83,7 +87,6 @@ namespace RestaurantPOS.Services
                                            }).ToListAsync();
             return tableOrderHistory;
         }
-
         public async Task<CartViewModel> ShowToCartAsync(ClaimsPrincipal user)
         {
             var customer = await _userManager.GetUserAsync(user);

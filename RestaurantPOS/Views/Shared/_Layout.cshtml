@@ -17,7 +17,7 @@
             <div class="container">
                 <ul class="header-links pull-left">
                     <li><a href="#"><i class="fa fa-phone"></i> 0394003431</a></li>
-                    <li><a href="#"><i class="far fa-envelope"></i> Hien@hcmut.edu.vn</a></li>
+                    <li><a href="#"><i class="far fa-envelope"></i> Mail@hcmut.edu.vn</a></li>
                     <li><a href="#"><i class="fa fa-map-marker"></i> Ho Chi Minh</a></li>
                 </ul>
                 <partial name="_LoginPartial" />
@@ -31,7 +31,7 @@
                 <!-- row -->
                 <div class="row">
                     <!-- LOGO -->
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="header-logo">
                             <a href="#" class="logo">
                                 <img src="/images/logo.png" alt="">
@@ -43,30 +43,20 @@
                     <div class="col-md-6">
                         <div class="header-search">
                             <form>
-                                <input class="input-select" placeholder="Search here">
-                                <button class="search-btn">Search</button>
+                                <input class="input-select" placeholder="Tìm kiếm tại đây">
+                                <button class="search-btn">Tìm kiếm</button>
                             </form>
                         </div>
                     </div>
                     <!-- /SEARCH BAR -->
                     <!-- ACCOUNT -->
-                    <div class="col-md-3 clearfix">
+                    <div class="col-md-2 clearfix">
                         <div class="header-ctn">
-                            <!-- Wishlist -->
-                            <div>
-                                <a href="#">
-                                    <i class="far fa-heart"></i>
-                                    <span>Your Wishlist</span>
-                                    <div class="qty">2</div>
-                                </a>
-                            </div>
-                            <!-- /Wishlist -->
                             <!-- Cart -->
                             <div>
                                 <a href="@Url.Action("ShowToCart","Home")">
                                     <i class="fa fa-shopping-cart"></i>
-                                    <span>Your Cart</span>
-                                    <div class="qty">3</div>
+                                    <span>Giỏ hàng</span>
                                 </a>
                             </div>
                             <!-- /Cart -->
@@ -89,7 +79,7 @@
             <div id="responsive-nav">
                 <!-- NAV -->
                 <ul class="main-nav nav navbar-nav">
-                    <li><a href=@Url.Action("Index","Home")>Home</a></li>
+                    <li><a href=@Url.Action("Index","Home")>Trang chủ</a></li>
                     <li><a href="@Url.Action("MenuFood","Menu")">Menu</a></li>
                     <li><a href="#">Đặt bàn</a></li>
                     <li><a href="@Url.Action("Payment", "Home")">Thanh toán</a></li>
@@ -124,7 +114,7 @@
                             <ul class="footer-links">
                                 <li><i class="fa fa-map-marker"></i>Hồ Chí Minh</li>
                                 <li><i class="fa fa-phone"></i>0394003434</li>
-                                <li><i class="far fa-envelope"></i>Hien@hcmut.edu.vn</li>
+                                <li><i class="far fa-envelope"></i>Mail@hcmut.edu.vn</li>
                             </ul>
                         </div>
                     </div>

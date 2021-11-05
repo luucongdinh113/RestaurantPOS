@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RestaurantPOS.Models;
 using RestaurantPOS.Services;
 using System.Security.Claims;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace RestaurantPOS.Controllers
 {
@@ -72,6 +69,7 @@ namespace RestaurantPOS.Controllers
 
             return RedirectToAction("Login");
         }
+
         [Route("Logout")]
         public async Task<IActionResult> Logout()
         {
@@ -84,6 +82,45 @@ namespace RestaurantPOS.Controllers
                 return RedirectToAction("Login", "Home");
             var TbHistory = await _customerService.GetTableHistoryAsync(User);
             return View(TbHistory);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ShowToCart()
+        {
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToAction("Login", "Home");
+            var cart = await _customerService.ShowToCartAsync(User);
+            return View(cart);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ShowToCart(CartDetailViewModel cartdetailvm)
+        {
+            if (cartdetailvm.Type == "-")
+            {
+                cartdetailvm.Quantity--;
+            }
+            if (cartdetailvm.Type == "+")
+            {
+                cartdetailvm.Quantity++;
+            }
+            var cart = await _customerService.ShowToCartAsync(User, cartdetailvm);
+            return View(cart);
+        }
+
+        [HttpGet("/Payment")]
+        public async Task<IActionResult> Payment()
+        {
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToAction("Login", "Home");
+            var payment = await _customerService.GetBillToPayAsync(User);
+            return View(payment);
+        }
+
+        [HttpPost("/Payment")]
+        public async Task<IActionResult> Payment(PaymentViewModel billPaymentVM)
+        {
+            await _customerService.UpdatePaymentMethodAsync(User, billPaymentVM);
+            return RedirectToAction("MenuFood", "Menu");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

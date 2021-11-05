@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using RestaurantPOS.Data;
 using RestaurantPOS.Data.Entities;
 using RestaurantPOS.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
@@ -85,6 +86,150 @@ namespace RestaurantPOS.Services
                                                PeopleCount = g.PeopleCount,
                                            }).ToListAsync();
             return tableOrderHistory;
+        }
+        public async Task<CartViewModel> ShowToCartAsync(ClaimsPrincipal user)
+        {
+            var customer = await _userManager.GetUserAsync(user);
+            if (customer == null)
+                return new CartViewModel();
+            var cart = await (from f in _context.Bill
+                              where f.CustomerId == customer.Id && f.PaymentMethod == string.Empty
+                              select new CartViewModel
+                              {
+                                  Total = f.Total,
+                                  ListFood = (from g in _context.BillDetail
+                                              join h in _context.Food on g.FoodId equals h.Id
+                                              where g.BillId == f.Id
+                                              select new CartDetailViewModel
+                                              {
+                                                  Id = f.Id,
+                                                  FoodId = g.FoodId,
+                                                  Name = h.Name,
+                                                  UnitPrice = g.UnitPrice,
+                                                  Quantity = g.Quantity,
+                                                  Price = g.Price,
+                                                  ImageURL = h.ImageURL,
+                                                  Type = ""
+                                              }).ToList(),
+                              }).FirstOrDefaultAsync();
+            if (cart == null)
+                return new CartViewModel();
+            return cart;
+        }
+
+        public async Task<CartViewModel> ShowToCartAsync(ClaimsPrincipal user, CartDetailViewModel cartdetailvm)
+        {
+            var customer = await _userManager.GetUserAsync(user);
+            if (customer == null)
+                return new CartViewModel();
+            if (cartdetailvm.Quantity == 0)
+            {
+                var CartDetail = (from f in _context.BillDetail
+                                  where f.BillId == cartdetailvm.Id && f.FoodId == cartdetailvm.FoodId
+                                  select f).FirstOrDefault();
+                var Cart = (from f in _context.Bill
+                            where f.Id == cartdetailvm.Id
+                            select f).FirstOrDefault();
+                Cart.Total -= cartdetailvm.UnitPrice;
+                _context.Remove(CartDetail);
+            }
+            else
+            {
+                var CartDt = (from f in _context.BillDetail
+                              where f.BillId == cartdetailvm.Id && f.FoodId == cartdetailvm.FoodId
+                              select f).FirstOrDefault();
+                var Cart = (from f in _context.Bill
+                            where f.Id == cartdetailvm.Id
+                            select f).FirstOrDefault();
+                if (cartdetailvm.Type == "-")
+                {
+                    CartDt.Quantity--;
+                    CartDt.Price -= cartdetailvm.UnitPrice;
+                    Cart.Total -= cartdetailvm.UnitPrice;
+                }
+                if (cartdetailvm.Type == "+")
+                {
+                    CartDt.Quantity++;
+                    CartDt.Price += cartdetailvm.UnitPrice;
+                    Cart.Total += cartdetailvm.UnitPrice;
+                }
+            }
+            _context.SaveChanges();
+            var cartafterupdate = await (from f in _context.Bill
+                                         where f.CustomerId == customer.Id && (f.PaymentMethod == string.Empty || f.PaymentMethod == null)
+                                         select new CartViewModel
+                                         {
+                                             Total = f.Total,
+                                             ListFood = (from g in _context.BillDetail
+                                                         join h in _context.Food on g.FoodId equals h.Id
+                                                         where g.BillId == f.Id
+                                                         select new CartDetailViewModel
+                                                         {
+                                                             Id = f.Id,
+                                                             FoodId = g.FoodId,
+                                                             Name = h.Name,
+                                                             UnitPrice = g.UnitPrice,
+                                                             Quantity = g.Quantity,
+                                                             Price = g.Price,
+                                                             ImageURL = h.ImageURL,
+                                                             Type = ""
+                                                         }).ToList(),
+                                         }).FirstOrDefaultAsync();
+            return cartafterupdate;
+        }
+
+        public async Task<PaymentViewModel> GetBillToPayAsync(ClaimsPrincipal user)
+        {
+            var customer = await _userManager.GetUserAsync(user);
+            var foodPayment = await (from b in _context.Bill
+                                     where b.CustomerId == customer.Id && b.PaymentMethod == string.Empty
+                                     select b).FirstOrDefaultAsync();
+
+            if (foodPayment == null)
+            {
+                return null;
+            }
+
+            var billToPay = await (from bd in _context.BillDetail
+                                   join f in _context.Food on bd.FoodId equals f.Id
+                                   where bd.BillId == foodPayment.Id
+                                   select new BillViewModel
+                                   {
+                                       FoodName = f.Name,
+                                       UnitPrice = f.UnitPrice,
+                                       Quantity = bd.Quantity,
+                                       Price = bd.Price
+                                   }).ToListAsync();
+
+            var payment = new PaymentViewModel
+            {
+                CreatedDate = foodPayment.CreatedDate,
+                BillId = foodPayment.Id,
+                BillToPay = billToPay,
+                Total = foodPayment.Total
+            };
+            return payment;
+        }
+
+        public async Task UpdatePaymentMethodAsync(ClaimsPrincipal user, PaymentViewModel payment)
+        {
+            var customer = await _userManager.GetUserAsync(user);
+            var billPayment = await (from b in _context.Bill
+                                     where b.CustomerId == customer.Id
+                                     select b).ToListAsync();
+
+            // Update VIP
+            if (billPayment.Count() > 10)
+                customer.VIP = true;
+
+            // Update payment method and total include VAT (10%)
+            var update = (from u in billPayment
+                          where u.PaymentMethod == string.Empty
+                          select u).FirstOrDefault();
+            update.PaymentMethod = payment.PaymentMethod;
+            update.Total = update.Total * 11 / 10;
+
+            _context.SaveChanges();
         }
     }
 }

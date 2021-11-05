@@ -71,6 +71,8 @@ namespace RestaurantPOS.Services
         public async Task<List<TableHistoryViewModel>> GetTableHistoryAsync(ClaimsPrincipal user)
         {
             var customer = await _userManager.GetUserAsync(user);
+            if (customer == null)
+                return new List<TableHistoryViewModel>();
             var tableOrderHistory = await (from f in _context.OderTable
                                            join g in _context.Table on f.TableId equals g.Id
                                            where f.CustomerId == customer.Id

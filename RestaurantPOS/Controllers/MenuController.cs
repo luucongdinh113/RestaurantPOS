@@ -2,6 +2,8 @@
 using RestaurantPOS.Services;
 using RestaurantPOS.Models;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RestaurantPOS.Controllers
 {
@@ -13,9 +15,14 @@ namespace RestaurantPOS.Controllers
             _foodService = foodService;
         }
         // GET: MenuController
-        public async Task<IActionResult> MenuFood()
+        public async Task<IActionResult> MenuFood(string[] listcategory)
         {
-            var foods = await _foodService.GetAllFoodAsync();
+            var foods = new List<FoodViewModel>();
+            if (listcategory.Count() == 0)
+            {
+                foods = await _foodService.GetAllFoodAsync();
+            }
+            else foods = await _foodService.GetFoodByFilterAsync(listcategory);
             return View(foods);
         }
 

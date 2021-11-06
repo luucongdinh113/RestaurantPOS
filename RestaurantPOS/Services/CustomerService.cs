@@ -7,8 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
 
 namespace RestaurantPOS.Services
 {
@@ -76,6 +74,40 @@ namespace RestaurantPOS.Services
         {
             await _signInManager.SignOutAsync();
         }
+
+        public async Task<bool> CheckPasswordAsync(RegisterViewModel customer)
+        {
+            var resetUser = await (from c in _context.Customer
+                                   where customer.UserName == c.UserName
+                                      && customer.FullName == c.FullName
+                                      && customer.PhoneNumber == c.PhoneNumber
+                                      && customer.Birthday == c.Birthday
+                                      && customer.Gender == c.Gender
+                                   select c).FirstOrDefaultAsync();
+            if (resetUser == null)
+                return false;
+            return true;
+        }
+
+        public async Task<bool> ResetPasswordAsync(RegisterViewModel customer)
+        {
+            var resetPassword = await (from c in _context.Customer
+                                       where customer.UserName == c.UserName
+                                          && customer.FullName == c.FullName
+                                          && customer.PhoneNumber == c.PhoneNumber
+                                          && customer.Birthday == c.Birthday
+                                          && customer.Gender == c.Gender
+                                       select c).FirstAsync();
+
+            if (customer.Password != customer.RePassword)
+                return false;
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(resetPassword);
+            await _userManager.ResetPasswordAsync(resetPassword, token, customer.Password);
+            _context.SaveChanges();
+            return true;
+        }
+
         public async Task<List<TableHistoryViewModel>> GetTableHistoryAsync(ClaimsPrincipal user)
         {
             var customer = await _userManager.GetUserAsync(user);

@@ -1,8 +1,8 @@
 ﻿using RestaurantPOS.Models;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Security.Claims;
 
 namespace RestaurantPOS.Services
 {
@@ -18,5 +18,7 @@ namespace RestaurantPOS.Services
         Task<CartViewModel> ShowToCartAsync(ClaimsPrincipal user);
         Task<CartViewModel> ShowToCartAsync(ClaimsPrincipal user, CartDetailViewModel cartdetailvm);
         Task UpdatePaymentMethodAsync(ClaimsPrincipal user, PaymentViewModel billPaymentVM);
+        Task<List<PaymentHistoryViewModel>> GetPaymentHistoryAsync(ClaimsPrincipal user);
+        Task<List<PaymentDetailViewModel>> GetPaymentDetailAsync(Guid billId);
     }
 }

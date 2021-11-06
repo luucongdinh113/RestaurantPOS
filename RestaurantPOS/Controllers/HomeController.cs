@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using RestaurantPOS.Models;
 using RestaurantPOS.Services;
-using System.Security.Claims;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -82,6 +81,26 @@ namespace RestaurantPOS.Controllers
                 return RedirectToAction("Login", "Home");
             var TbHistory = await _customerService.GetTableHistoryAsync(User);
             return View(TbHistory);
+        }
+
+        [HttpGet("/ResetPassword")]
+        public IActionResult ResetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost("/ResetPassword")]
+        public async Task<IActionResult> ResetPassword(RegisterViewModel resetPassword)
+        {
+            var check = await _customerService.CheckPasswordAsync(resetPassword);
+            if (!check)
+            {
+                ModelState.Clear();
+                return View();
+            }
+
+            await _customerService.ResetPasswordAsync(resetPassword);
+            return RedirectToAction("Login", "Home");
         }
 
         [HttpGet]

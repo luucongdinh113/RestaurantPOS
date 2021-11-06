@@ -15,14 +15,9 @@ namespace RestaurantPOS.Controllers
             _foodService = foodService;
         }
         // GET: MenuController
-        public async Task<IActionResult> MenuFood(string[] listcategory)
+        public async Task<IActionResult> MenuFood(string[] listCategory)
         {
-            var foods = new List<FoodViewModel>();
-            if (listcategory.Count() == 0)
-            {
-                foods = await _foodService.GetAllFoodAsync();
-            }
-            else foods = await _foodService.GetFoodByFilterAsync(listcategory);
+            var foods = await _foodService.GetAllFoodAsync(listCategory);
             return View(foods);
         }
 

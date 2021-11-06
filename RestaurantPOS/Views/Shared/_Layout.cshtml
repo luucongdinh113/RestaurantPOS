@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    @RenderSection("CustomCss", required: false)
 </head>
 <body>
     <!-- HEADER -->
@@ -81,7 +82,7 @@
                 <ul class="main-nav nav navbar-nav">
                     <li><a href=@Url.Action("Index","Home")>Trang chủ</a></li>
                     <li><a href="@Url.Action("MenuFood","Menu")">Menu</a></li>
-                    <li><a href="#">Đặt bàn</a></li>
+                    <li><a href="@Url.Action("BookTable","Reservation")">Đặt bàn</a></li>
                     <li><a href="@Url.Action("Payment", "Home")">Thanh toán</a></li>
                     <li><a href="@Url.Action("TableOrderedHistory","Home")">Lịch sử đặt bàn</a></li>
                     <li><a href="@Url.Action("PaymentHistory","Home")">Lịch sử thanh toán</a></li>

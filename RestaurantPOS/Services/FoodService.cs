@@ -42,7 +42,6 @@ namespace RestaurantPOS.Services
                                }).ToListAsync();  
                 return foods;
         }
-       
         public async Task<FoodViewModel> GetFoodByIdAsync(int id)
         {
             var food = await (from f in _context.Food

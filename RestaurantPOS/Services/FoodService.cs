@@ -104,8 +104,8 @@ namespace RestaurantPOS.Services
                     CustomerId = customer.Id,
                     Total = food.insertFoodViewModel.Quantity * food.insertFoodViewModel.UnitPrice,
                     PaymentMethod = string.Empty,
-                    CreatedDate = DateTime.Now
-                };
+                    CreatedDate = TimeZoneInfo.ConvertTimeToUtc(DateTime.Now)
+            };
                 _context.Bill.Add(newBill);
                 var newBillDetail = new BillDetail()
                 {

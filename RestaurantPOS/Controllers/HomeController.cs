@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using RestaurantPOS.Models;
 using RestaurantPOS.Services;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -141,6 +142,22 @@ namespace RestaurantPOS.Controllers
             await _customerService.UpdatePaymentMethodAsync(User, billPaymentVM);
             return RedirectToAction("MenuFood", "Menu");
         }
+
+        public async Task<IActionResult> PaymentHistory()
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Home");
+            }
+            var pmHistory = await _customerService.GetPaymentHistoryAsync(User);
+            return View(pmHistory);
+        }
+        public async Task<IActionResult> PaymentDetailHistory(Guid id)
+        {
+            var paymentDetail = await _customerService.GetPaymentDetailAsync(id);
+            return View(paymentDetail);
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

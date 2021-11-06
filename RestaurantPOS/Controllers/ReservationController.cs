@@ -19,23 +19,17 @@ namespace RestaurantManagement.Controllers
         public IActionResult BookTable()
         {
             if (!User.Identity.IsAuthenticated)
-                return RedirectToAction("Login", "Home");
+            {
+                return RedirectToAction("Login", "Home"); ;
+            }
             return View(new ListBookInfoViewModel());
         }
 
         [HttpPost("/Reservation")]
         public async Task<IActionResult> BookTable(BookTableInfoViewModel bookTableInfo)
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Login", "Home");
-            }
             if (bookTableInfo.Type=="search")
             {
-                if (!User.Identity.IsAuthenticated)
-                {
-                    return RedirectToAction("Login", "Home");
-                }
                 bookTableInfo.From = new DateTime(bookTableInfo.OrderDate.Year, bookTableInfo.OrderDate.Month, bookTableInfo.OrderDate.Day, bookTableInfo.From.Hour, bookTableInfo.From.Minute, bookTableInfo.From.Second);
                 bookTableInfo.To = new DateTime(bookTableInfo.OrderDate.Year, bookTableInfo.OrderDate.Month, bookTableInfo.OrderDate.Day, bookTableInfo.To.Hour, bookTableInfo.To.Minute, bookTableInfo.To.Second);
                 bookTableInfo.From = TimeZoneInfo.ConvertTimeToUtc(bookTableInfo.From);
@@ -48,9 +42,6 @@ namespace RestaurantManagement.Controllers
             }    
            if(bookTableInfo.Type=="book")
             {
-                if (!User.Identity.IsAuthenticated)
-                { return RedirectToAction("Login", "Home"); }
-                await _reservationService.BookTableAsync(User, bookTableInfo);
                 return RedirectToAction("TableOrderedHistory", "Home");
             }
             return View();

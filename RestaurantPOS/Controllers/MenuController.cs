@@ -35,6 +35,8 @@ namespace RestaurantPOS.Controllers
         [HttpPost]
         public async Task<IActionResult> InsertFoodToCart(FoodViewModel food)
         {
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToAction("Login", "Home");
             await _foodService.InsertFoodAsync(User, food);
             return RedirectToAction("MenuFood");
         }

@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using RestaurantPOS.Data.Entities
+@inject SignInManager<Customer> SignInManager
+@inject UserManager<Customer> UserManager
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -82,9 +86,14 @@
                 <ul class="main-nav nav navbar-nav">
                     <li><a href=@Url.Action("Index","Home")>Trang chủ</a></li>
                     <li><a href="@Url.Action("MenuFood","Menu")">Menu</a></li>
-                    <li><a href="@Url.Action("BookTable","Reservation")">Đặt bàn</a></li>
+                    @{
+                        if (!SignInManager.IsSignedIn(User) || (await UserManager.GetUserAsync(User)).VIP)
+                        {
+                            <li><a href="#">Đặt bàn</a></li>
+                            <li><a href="@Url.Action("TableOrderedHistory", "Home")">Lịch sử đặt bàn</a></li>
+                        }
+                    }
                     <li><a href="@Url.Action("Payment", "Home")">Thanh toán</a></li>
-                    <li><a href="@Url.Action("TableOrderedHistory","Home")">Lịch sử đặt bàn</a></li>
                     <li><a href="@Url.Action("PaymentHistory","Home")">Lịch sử thanh toán</a></li>
                 </ul>
                 <!-- /NAV -->

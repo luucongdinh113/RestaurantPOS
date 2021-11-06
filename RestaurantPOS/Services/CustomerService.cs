@@ -47,6 +47,12 @@ namespace RestaurantPOS.Services
                 return false;
             }
 
+            customer = await _userManager.FindByEmailAsync(registerViewModel.Email);
+            if (customer != null)
+            {
+                return false;
+            }
+
             var newCustomer = new Customer()
             {
                 Id = System.Guid.NewGuid(),
@@ -55,6 +61,7 @@ namespace RestaurantPOS.Services
                 FullName = registerViewModel.FullName,
                 Gender = registerViewModel.Gender,
                 Birthday = registerViewModel.Birthday,
+                Email = registerViewModel.Email,
                 VIP = false,
             };
 

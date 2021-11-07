@@ -1,4 +1,4 @@
-﻿/************************** GERENAL******************************/
+/************************** GERENAL******************************/
 /*****************************************************************/
 
 /*----------------------------*\
@@ -363,7 +363,9 @@ textarea.input {
     background-repeat: no-repeat;
     height: 100%;
 }
-
+.login-register {
+    color: #1bee14 !important;
+}
 .container {
     height: 100%;
     align-content: center;
@@ -376,7 +378,12 @@ textarea.input {
     width: 400px;
     background-color: rgba(0, 0, 0, 0.5) !important;
 }
-
+.card .card-footer a{
+    color:red;
+}
+.card .card-footer a:hover{
+    color:blue;
+}
 .social_icon span {
     font-size: 60px;
     margin-left: 10px;
@@ -818,6 +825,7 @@ input:focus {
 
         .product .product-img > img {
             width: 100%;
+            height:250px;
         }
     .product .product-body {
         position: relative;

@@ -20,7 +20,6 @@ namespace RestaurantPOS.Services
             _context = context;
             _userManager = userManager;
         }
-
         public async Task<List<FoodViewModel>> GetAllFoodAsync(string[] listCategory)
         {
             var query = from f in _context.Food

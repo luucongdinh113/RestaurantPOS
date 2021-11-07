@@ -1,5 +1,4 @@
 ﻿using System;
-
 namespace RestaurantPOS.Models
 {
     public class TableHistoryViewModel

@@ -28,7 +28,6 @@ namespace RestaurantPOS.Controllers
         {
             return View(new LoginViewModel());
         }
-
         [HttpPost("/Login")]
         public async Task<IActionResult> Login(LoginViewModel loginViewModel)
         {
@@ -87,7 +86,95 @@ namespace RestaurantPOS.Controllers
         [HttpGet("/ResetPassword")]
         public IActionResult ResetPassword()
         {
-            return View();
+            if (!ModelState.IsValid)
+            {
+                return View(loginViewModel);
+            }
+
+            var loginSucess = await _customerService.LoginAsync(loginViewModel.UserName, loginViewModel.Password);
+
+            if (!loginSucess)
+            {
+                return View(loginViewModel);
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet("/Register")]
+        public IActionResult Register()
+        {
+            return View(new RegisterViewModel());
+        }
+
+        [HttpPost("/Register")]
+        public async Task<IActionResult> Register(RegisterViewModel registerViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(registerViewModel);
+            }
+            var registerSucess = await _customerService.RegisterAsync(registerViewModel);
+
+            if (!registerSucess)
+            {
+                return View(registerViewModel);
+            }
+
+            return RedirectToAction("Login");
+        }
+
+        [Route("Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _customerService.SignOutAsync();
+            return RedirectToAction("Index");
+        }
+        public async Task<IActionResult> TableOrderedHistory()
+        {
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToAction("Login", "Home");
+            var TbHistory = await _customerService.GetTableHistoryAsync(User);
+            return View(TbHistory);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ShowToCart()
+        {
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToAction("Login", "Home");
+            var cart = await _customerService.ShowToCartAsync(User);
+            return View(cart);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ShowToCart(CartDetailViewModel cartdetailvm)
+        {
+            if (cartdetailvm.Type == "-")
+            {
+                cartdetailvm.Quantity--;
+            }
+            if (cartdetailvm.Type == "+")
+            {
+                cartdetailvm.Quantity++;
+            }
+            var cart = await _customerService.ShowToCartAsync(User, cartdetailvm);
+            return View(cart);
+        }
+
+        [HttpGet("/Payment")]
+        public async Task<IActionResult> Payment()
+        {
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToAction("Login", "Home");
+            var payment = await _customerService.GetBillToPayAsync(User);
+            return View(payment);
+        }
+
+        [HttpPost("/Payment")]
+        public async Task<IActionResult> Payment(PaymentViewModel billPaymentVM)
+        {
+            await _customerService.UpdatePaymentMethodAsync(User, billPaymentVM);
+            return RedirectToAction("MenuFood", "Menu");
         }
 
         [HttpPost("/ResetPassword")]

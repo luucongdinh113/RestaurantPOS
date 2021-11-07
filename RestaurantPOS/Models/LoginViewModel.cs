@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
 namespace RestaurantPOS.Models
 {
     public class LoginViewModel

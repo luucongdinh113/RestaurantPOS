@@ -4,7 +4,6 @@ using RestaurantPOS.Models;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
-
 namespace RestaurantPOS.Controllers
 {
     public class MenuController : Controller

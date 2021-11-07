@@ -45,7 +45,6 @@ namespace RestaurantPOS.Services
             {
                 return false;
             }
-
             customer = await _userManager.FindByEmailAsync(registerViewModel.Email);
             if (customer != null)
             {
@@ -75,7 +74,6 @@ namespace RestaurantPOS.Services
         {
             await _signInManager.SignOutAsync();
         }
-
         public async Task<bool> CheckPasswordAsync(RegisterViewModel customer)
         {
             var resetUser = await (from c in _context.Customer
@@ -261,13 +259,10 @@ namespace RestaurantPOS.Services
             // Update VIP
             if (billPayment.Count() > 10)
                 customer.VIP = true;
-
-            // Update payment method and totals
             var update = (from u in billPayment
                           where u.PaymentMethod == string.Empty
                           select u).FirstOrDefault();
             update.PaymentMethod = payment.PaymentMethod;
-
             _context.SaveChanges();
         }
 

@@ -140,7 +140,7 @@ namespace RestaurantPOS.Controllers
         public async Task<IActionResult> Payment(PaymentViewModel billPaymentVM)
         {
             await _customerService.UpdatePaymentMethodAsync(User, billPaymentVM);
-            return RedirectToAction("MenuFood", "Menu");
+            return RedirectToAction("PaymentHistory", "Home");
         }
 
         public async Task<IActionResult> PaymentHistory()

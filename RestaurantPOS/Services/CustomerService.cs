@@ -278,6 +278,7 @@ namespace RestaurantPOS.Services
                 return new List<PaymentHistoryViewModel>();
             var paymentHistory = await (from b in _context.Bill
                                         where b.CustomerId == customer.Id && b.PaymentMethod != null && b.PaymentMethod != string.Empty
+                                        orderby b.CreatedDate descending
                                         select new PaymentHistoryViewModel
                                         {
                                             Id = b.Id,

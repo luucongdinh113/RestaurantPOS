@@ -10,8 +10,8 @@
     font-family: Raleway;
 }
 .py-5{
-    padding-top: 0px!important;
-    padding-bottom: 0px!important;
+    padding-top: 10px!important;
+    padding-bottom: 10px!important;
 }
 .rounded {
     border-radius: 1rem
@@ -304,14 +304,11 @@ button.finish-payment {
     background: url("../images/background_payment.jpg");
     background-size: cover;
     background-repeat: no-repeat;
-    height: 721px;
     width: auto;
+    padding-top: 50px;
+    padding-bottom: 30px;
+    min-height: 657px !important;
 }
-
-    .payment .padding {
-        padding: 1rem !important;
-    }
-
     .payment .card {
         margin-bottom: 30px;
         border: none;

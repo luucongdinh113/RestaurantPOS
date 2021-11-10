@@ -35,25 +35,10 @@
                required=""
                min=""
                required
+               onchange="setMin()"
                />
             </div>
             <div class="form-group">
-              <label for="time">Từ:</label>
-              <input
-                class="input"
-                type="time"
-                placeholder="hh:mm"
-                id="time"
-                min=""
-                value=""
-                name="booktableinfo.From"
-                required=""
-                min="08:00" max="23:30"
-              />
-            </div>
-          </div>
-          <div class="col-md-6">
-              <div class="form-group">
                   <label for="number">Số lượng khách:</label>
                   <select class="input khach" id="number" name="booktableinfo.People" required>
                       <option value="" selected disabled hidden>Chọn số lượng khách</option>
@@ -67,6 +52,22 @@
                       <option value="8" >8 người</option>
                       <option value="9" >9 người</option>
                   </select>
+             </div>
+          </div>
+          <div class="col-md-6">
+              <div class="form-group">
+                  <label for="time">Từ:</label>
+                  <input
+                    class="input"
+                    type="time"
+                    placeholder="hh:mm"
+                    id="time"
+                    value=""
+                    name="booktableinfo.From"
+                    required=""
+                    max="23:00"
+                    onchange="setMinTime()"
+                  />
               </div>
               <div class="form-group">
                   <label for="time">Đến:</label>
@@ -74,7 +75,6 @@
                          type="time"
                          placeholder="hh:mm"
                          id="time1"
-                         min="" 
                          name="booktableinfo.To"
                          required
                   />
@@ -196,6 +196,7 @@
     </div>
   </div>
 </div>
+@section Scripts{
 <script type="text/javascript">
   var d1 = new Date();
   var y1 = d1.getFullYear();
@@ -205,12 +206,42 @@
   if (dt1 < 10) dt1 = "0" + dt1;
   var d2 = y1 + "-" + m1 + "-" + dt1;
   document.getElementById("dateOrder").min = d2;
-  document.getElementById("time").min="08:00";
-  document.getElementById("time").max="23:30";
-  document.getElementById("time1").min=document.getElementById("time").value;
-  document.getElementById("time1").max="23:30";
-  function get_content()
+  function setMin()
+  { 
+    if(d2==document.getElementById("dateOrder").value)
+    {
+          var hour1 = d1.getHours();
+          var minute1 = d1.getMinutes();
+          if(hour1 > 8 )
+          {
+              if (hour1 < 10) hour1 = "0" + hour1;
+              if (minute1 < 10) minute1 = "0" + minute1;    
+              var t2=hour1 + ":" + minute1;
+              document.getElementById("time").min=t2;
+          }
+          else document.getElementById("time").min="08:00";
+    }
+    else document.getElementById("time").min="08:00";
+  }
+  function setMinTime()
   {
-    alert("Đặt bàn thành công" );        
+      document.getElementById("time1").min=document.getElementById("time").value;
+      var d=document.getElementById("time").value;
+      var d1=Number(d.substring(0,2));
+      var d2=Number(d.substring(3,5));
+      if(d1<20 ||(d1==20 && d2<30)) document.getElementById("time1").max=(d1+3)+d.substring(2, 5);
+      else{
+          document.getElementById("time1").max="23:30";
+      }
+      if(d2>30) 
+      {
+          d2=d2+30-60;
+          d1=d1+1;
+          if(d2<10) d2="0"+d2;
+      }
+      else d2=d2+30;
+      if(d1<10) d1="0"+d1;
+      document.getElementById("time1").min=d1+":"+d2;
   }
 </script>
+}

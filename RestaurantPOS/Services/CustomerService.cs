@@ -115,6 +115,7 @@ namespace RestaurantPOS.Services
             var tableOrderHistory = await (from f in _context.OderTable
                                            join g in _context.Table on f.TableId equals g.Id
                                            where f.CustomerId == customer.Id
+                                           orderby f.From descending
                                            select new TableHistoryViewModel
                                            {
                                                Id = f.Id,

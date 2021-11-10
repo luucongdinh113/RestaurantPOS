@@ -4,7 +4,6 @@ using RestaurantPOS.Models;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
-
 namespace RestaurantPOS.Controllers
 {
     public class MenuController : Controller
@@ -15,14 +14,9 @@ namespace RestaurantPOS.Controllers
             _foodService = foodService;
         }
         // GET: MenuController
-        public async Task<IActionResult> MenuFood(string[] listcategory)
+        public async Task<IActionResult> MenuFood(string[] listCategory)
         {
-            var foods = new List<FoodViewModel>();
-            if (listcategory.Count() == 0)
-            {
-                foods = await _foodService.GetAllFoodAsync();
-            }
-            else foods = await _foodService.GetFoodByFilterAsync(listcategory);
+            var foods = await _foodService.GetAllFoodAsync(listCategory);
             return View(foods);
         }
 
@@ -35,6 +29,8 @@ namespace RestaurantPOS.Controllers
         [HttpPost]
         public async Task<IActionResult> InsertFoodToCart(FoodViewModel food)
         {
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToAction("Login", "Home");
             await _foodService.InsertFoodAsync(User, food);
             return RedirectToAction("MenuFood");
         }

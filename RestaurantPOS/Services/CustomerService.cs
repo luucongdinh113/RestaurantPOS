@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using RestaurantPOS.Data;
 using RestaurantPOS.Data.Entities;
 using RestaurantPOS.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -44,6 +45,11 @@ namespace RestaurantPOS.Services
             {
                 return false;
             }
+            customer = await _userManager.FindByEmailAsync(registerViewModel.Email);
+            if (customer != null)
+            {
+                return false;
+            }
 
             var newCustomer = new Customer()
             {
@@ -53,6 +59,7 @@ namespace RestaurantPOS.Services
                 FullName = registerViewModel.FullName,
                 Gender = registerViewModel.Gender,
                 Birthday = registerViewModel.Birthday,
+                Email = registerViewModel.Email,
                 VIP = false,
             };
 
@@ -76,6 +83,7 @@ namespace RestaurantPOS.Services
             var tableOrderHistory = await (from f in _context.OderTable
                                            join g in _context.Table on f.TableId equals g.Id
                                            where f.CustomerId == customer.Id
+                                           orderby f.From descending
                                            select new TableHistoryViewModel
                                            {
                                                Id = f.Id,
@@ -121,36 +129,49 @@ namespace RestaurantPOS.Services
             var customer = await _userManager.GetUserAsync(user);
             if (customer == null)
                 return new CartViewModel();
-            if (cartdetailvm.Quantity == 0)
+            if (cartdetailvm.Quantity <= 0)
             {
                 var CartDetail = (from f in _context.BillDetail
                                   where f.BillId == cartdetailvm.Id && f.FoodId == cartdetailvm.FoodId
                                   select f).FirstOrDefault();
-                var Cart = (from f in _context.Bill
-                            where f.Id == cartdetailvm.Id
-                            select f).FirstOrDefault();
-                Cart.Total -= cartdetailvm.UnitPrice;
-                _context.Remove(CartDetail);
+                if (CartDetail != null)
+                {
+                    var Cart = (from f in _context.Bill
+                                where f.Id == cartdetailvm.Id
+                                select f).FirstOrDefault();
+                    Cart.Total -= cartdetailvm.UnitPrice;
+                    _context.Remove(CartDetail);
+                }
             }
             else
             {
                 var CartDt = (from f in _context.BillDetail
                               where f.BillId == cartdetailvm.Id && f.FoodId == cartdetailvm.FoodId
                               select f).FirstOrDefault();
-                var Cart = (from f in _context.Bill
-                            where f.Id == cartdetailvm.Id
-                            select f).FirstOrDefault();
-                if (cartdetailvm.Type == "-")
+                if (CartDt != null)
                 {
-                    CartDt.Quantity--;
-                    CartDt.Price -= cartdetailvm.UnitPrice;
-                    Cart.Total -= cartdetailvm.UnitPrice;
-                }
-                if (cartdetailvm.Type == "+")
-                {
-                    CartDt.Quantity++;
-                    CartDt.Price += cartdetailvm.UnitPrice;
-                    Cart.Total += cartdetailvm.UnitPrice;
+                    var Cart = (from f in _context.Bill
+                                where f.Id == cartdetailvm.Id
+                                select f).FirstOrDefault();
+                    if (cartdetailvm.Type == "-")
+                    {
+                        CartDt.Quantity--;
+                        if (CartDt.Quantity > 0)
+                        {
+                            CartDt.Price -= cartdetailvm.UnitPrice;
+                            Cart.Total -= cartdetailvm.UnitPrice;
+                        }
+                        else
+                        {
+                            _context.Remove(CartDt);
+                        }
+                    }
+                    if (cartdetailvm.Type == "+")
+                    {
+                        CartDt.Quantity++;
+                        CartDt.Price += cartdetailvm.UnitPrice;
+                        Cart.Total += cartdetailvm.UnitPrice;
+                    }
                 }
             }
             _context.SaveChanges();
@@ -195,7 +216,7 @@ namespace RestaurantPOS.Services
                                    select new BillViewModel
                                    {
                                        FoodName = f.Name,
-                                       UnitPrice = f.UnitPrice,
+                                       UnitPrice = bd.UnitPrice,
                                        Quantity = bd.Quantity,
                                        Price = bd.Price
                                    }).ToListAsync();
@@ -220,15 +241,48 @@ namespace RestaurantPOS.Services
             // Update VIP
             if (billPayment.Count() > 10)
                 customer.VIP = true;
-
-            // Update payment method and total include VAT (10%)
             var update = (from u in billPayment
                           where u.PaymentMethod == string.Empty
                           select u).FirstOrDefault();
             update.PaymentMethod = payment.PaymentMethod;
-            update.Total = update.Total * 11 / 10;
-
             _context.SaveChanges();
+        }
+
+        public async Task<List<PaymentHistoryViewModel>> GetPaymentHistoryAsync(ClaimsPrincipal user)
+        {
+            var customer = await _userManager.GetUserAsync(user);
+            if (customer == null)
+                return new List<PaymentHistoryViewModel>();
+            var paymentHistory = await (from b in _context.Bill
+                                        where b.CustomerId == customer.Id && b.PaymentMethod != null && b.PaymentMethod != string.Empty
+                                        orderby b.CreatedDate descending
+                                        select new PaymentHistoryViewModel
+                                        {
+                                            Id = b.Id,
+                                            Total = b.Total,
+                                            PaymentMethod = b.PaymentMethod,
+                                            CreatedDate = b.CreatedDate,
+                                        }).ToListAsync();
+            return paymentHistory;
+        }
+
+        public async Task<List<PaymentDetailViewModel>> GetPaymentDetailAsync(Guid billId)
+        {
+            var paymentDetail = await (from b in _context.BillDetail
+                                       join g in _context.Food on b.FoodId equals g.Id
+                                       where b.BillId == billId
+                                       select new PaymentDetailViewModel
+                                       {
+                                           BillId = b.BillId,
+                                           FoodName = g.Name,
+                                           UnitPrice = b.UnitPrice,
+                                           Quantity = b.Quantity,
+                                           Price = b.Price,
+                                           Total = (from b in _context.Bill
+                                                    where b.Id == billId
+                                                    select b.Total).FirstOrDefault()
+                                       }).ToListAsync();
+            return paymentDetail;
         }
     }
 }

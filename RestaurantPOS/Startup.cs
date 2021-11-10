@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using RestaurantManagement.Services;
 using RestaurantPOS.Data;
 using System.IO;
 using RestaurantPOS.Data.Entities;
@@ -43,6 +44,7 @@ namespace RestaurantPOS
             services.AddTransient<UserManager<Customer>, UserManager<Customer>>();
             services.AddTransient<IFoodService, FoodService>();
             services.AddTransient<IResetPasswordService, ResetPasswordService>();
+            services.AddTransient<IReservationService, ReservationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

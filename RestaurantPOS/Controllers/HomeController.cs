@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RestaurantPOS.Models;
 using RestaurantPOS.Services;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -27,7 +28,6 @@ namespace RestaurantPOS.Controllers
         {
             return View(new LoginViewModel());
         }
-
         [HttpPost("/Login")]
         public async Task<IActionResult> Login(LoginViewModel loginViewModel)
         {
@@ -83,6 +83,25 @@ namespace RestaurantPOS.Controllers
             return View(TbHistory);
         }
 
+        [HttpGet("/ResetPassword")]
+        public IActionResult ResetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost("/ResetPassword")]
+        public async Task<IActionResult> ResetPassword(RegisterViewModel resetPassword)
+        {
+            var check = await _customerService.CheckPasswordAsync(resetPassword);
+            if (!check)
+            {
+                ModelState.Clear();
+                return View();
+            }
+
+            await _customerService.ResetPasswordAsync(resetPassword);
+            return RedirectToAction("Login", "Home");
+        }
         [HttpGet]
         public async Task<IActionResult> ShowToCart()
         {
@@ -119,7 +138,22 @@ namespace RestaurantPOS.Controllers
         public async Task<IActionResult> Payment(PaymentViewModel billPaymentVM)
         {
             await _customerService.UpdatePaymentMethodAsync(User, billPaymentVM);
-            return RedirectToAction("MenuFood", "Menu");
+            return RedirectToAction("PaymentHistory", "Home");
+        }
+
+        public async Task<IActionResult> PaymentHistory()
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Home");
+            }
+            var pmHistory = await _customerService.GetPaymentHistoryAsync(User);
+            return View(pmHistory);
+        }
+        public async Task<IActionResult> PaymentDetailHistory(Guid id)
+        {
+            var paymentDetail = await _customerService.GetPaymentDetailAsync(id);
+            return View(paymentDetail);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

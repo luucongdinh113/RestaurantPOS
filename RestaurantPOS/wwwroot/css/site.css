@@ -429,6 +429,7 @@ input:focus {
     color: black;
     background-color: #ffc312;
     width: 120px;
+    margin-top: 10px;
 }
 
     .login_btn:hover {

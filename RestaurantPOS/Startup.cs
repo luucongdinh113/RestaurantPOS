@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using RestaurantManagement.Services;
 using RestaurantPOS.Data;
+using System.IO;
 using RestaurantPOS.Data.Entities;
 using RestaurantPOS.Services;
 using System;
@@ -41,6 +43,7 @@ namespace RestaurantPOS
             services.AddTransient<SignInManager<Customer>, SignInManager<Customer>>();
             services.AddTransient<UserManager<Customer>, UserManager<Customer>>();
             services.AddTransient<IFoodService, FoodService>();
+            services.AddTransient<IResetPasswordService, ResetPasswordService>();
             services.AddTransient<IReservationService, ReservationService>();
         }
 

@@ -1113,7 +1113,22 @@ input:focus {
     text-transform: uppercase;
     font-size: 12px;
 }
-
+/*font category*/
+.cate1 {
+    margin-bottom: 20px; text-transform: capitalize;
+    text-align: left;
+    font-size: 30px;
+    font-weight: 600;
+    font-family: Blippo, fantasy;
+}
+.cate2 {
+    margin-bottom: 20px;
+    text-transform: capitalize;
+    text-align: left;
+    font-size: 20px;
+    font-weight: 400;
+    font-family: Blippo, fantasy;
+}
 /************************************************************/
 /****************************** MENU *************************/
 

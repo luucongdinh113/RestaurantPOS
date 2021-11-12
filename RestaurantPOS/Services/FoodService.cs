@@ -31,6 +31,7 @@ namespace RestaurantPOS.Services
                         select q;
             }
             var foods = await (from q in query
+                               orderby q.Category descending
                                select new FoodViewModel()
                                {
                                    Id = q.Id,

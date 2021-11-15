@@ -9,7 +9,10 @@
     flex-direction: column;
     font-family: Raleway;
 }
-
+.py-5{
+    padding-top: 0px!important;
+    padding-bottom: 10px!important;
+}
 .rounded {
     border-radius: 1rem
 }
@@ -223,8 +226,8 @@ span.rth {
 img#momo-QR-code,
 img#zalopay-QR-code,
 img#airpay-QR-code {
-    margin-top: 40px;
-    margin-bottom: 30px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 button.finish-payment {
@@ -301,14 +304,11 @@ button.finish-payment {
     background: url("../images/background_payment.jpg");
     background-size: cover;
     background-repeat: no-repeat;
-    height: 721px;
     width: auto;
+    padding-top: 50px;
+    padding-bottom: 30px;
+    min-height: 657px !important;
 }
-
-    .payment .padding {
-        padding: 1rem !important;
-    }
-
     .payment .card {
         margin-bottom: 30px;
         border: none;

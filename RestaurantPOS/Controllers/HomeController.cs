@@ -102,6 +102,7 @@ namespace RestaurantPOS.Controllers
             await _customerService.ResetPasswordAsync(resetPassword);
             return RedirectToAction("Login", "Home");
         }
+
         [HttpGet]
         public async Task<IActionResult> ShowToCart()
         {

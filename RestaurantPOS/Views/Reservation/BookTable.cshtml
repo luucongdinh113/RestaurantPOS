@@ -2,8 +2,15 @@
 @section CustomCss{
 <!-- Custom stlylesheet -->
 <link type="text/css" rel="stylesheet" href="/css/reservation.css" />
-<link type="text/css" rel="stylesheet" href="/css/owl.carousel.css" />
+<link type="text/!importantss" rel="stylesheet" href="/css/owl.carousel.css" />
 <link type="text/css" rel="stylesheet" href="/css/owl.theme.default.css" />
+<style>
+    .swal-wide{
+    width:600px !important;
+    height:350px !important;
+    font-size: 2rem !important;
+    }
+</style>
 }
 @model ListBookInfoViewModel
 <div id="reservation" class="section">
@@ -49,6 +56,7 @@
                       <option value="7" >7 người</option>
                       <option value="8" >8 người</option>
                       <option value="9" >9 người</option>
+                      <option value="9" >10 người</option>
                   </select>
              </div>
           </div>
@@ -194,6 +202,8 @@
   </div>
 </div>
 @section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.10.1/dist/sweetalert2.all.min.js"></script>
+	<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@10.10.1/dist/sweetalert2.min.css'>
 <script type="text/javascript">
   var d1 = new Date();
   var y1 = d1.getFullYear();
@@ -202,28 +212,53 @@
   var dt1 = d1.getDate();
   if (dt1 < 10) dt1 = "0" + dt1;
   var h=d1.getHours();
-  if(h>=23 ) dt1+=1;
-  var d2 = y1 + "-" + m1 + "-" + dt1;
-  document.getElementById("dateOrder").min = d2;
+  if(h>=23 )dt1+=1;
+  var d3 = y1 + "-" + m1 + "-" + dt1;
+  document.getElementById("dateOrder").min = d3;
+  var d2 =y1 + "-" + m1 + "-" + (dt1-1);
   function kiemtra(){
     var d = document.getElementById("dateOrder").value;
     var t1= document.getElementById("time").value;
     var t2= document.getElementById("time1").value;
     var q= document.getElementById("number").value;
-    if (d=="") { //quy tắc 1
-        alert("Vui lòng chọn ngày đặt bàn");
+    if (d=="") {
+        Swal.fire({
+		  icon: 'error',
+	      title: 'Oops...',
+          customClass: 'swal-wide',
+		  text: 'Vui lòng chọn ngày đặt bàn!',
+		  timer: 2000
+		})
         return false;
     }
-    if (t1=="") { //quy tắc 1
-         alert("Vui lòng chọn thời gian bắt dầu đặt bàn");
+    if (t1=="") {
+        Swal.fire({
+		  icon: 'error',
+	      title: 'Oops...',
+          customClass: 'swal-wide',
+		  text: 'Vui lòng chọn thời gian bắt dầu đặt bàn!',
+		  timer: 2000
+		})
         return false;
     }
-    if (t2=="") { //quy tắc 1
-       alert("Vui lòng chọn thời gian kết thúc đặt bàn");
+    if (t2=="") {
+        Swal.fire({
+		  icon: 'error',
+	      title: 'Oops...',
+          customClass: 'swal-wide',
+		  text: 'Vui lòng chọn thời gian kết thúc đặt bàn!',
+		  timer: 2000
+		})
         return false;
     }
-    if (q=="") { //quy tắc 1
-       alert("Vui lòng chọn số lượng khách cho bàn sẽ đặt");
+    if (q=="") {
+        Swal.fire({
+		  icon: 'error',
+	      title: 'Oops...',
+          customClass: 'swal-wide',
+		  text: 'Vui lòng chọn số lượng khách cho bàn sẽ đặt!',
+		  timer: 2000
+		})
         return false;
     }
     return true;
@@ -232,7 +267,13 @@
       var z=document.getElementById("time").value;
       if(z=="")
       {
-          alert("Vui lòng chọn thời gian bắt đầu đặt bàn");
+          Swal.fire({
+		  icon: 'error',
+	      title: 'Oops...',
+          customClass: 'swal-wide',
+		  text: 'Vui lòng chọn thời gian bắt dầu đặt bàn!',
+		  timer: 2000
+		  })
           document.getElementById("time1").value=null;
           return;
       }
@@ -242,13 +283,20 @@
       var x1=Number(x.substring(0,2));
       var x2=Number(x.substring(3,5));
       if((x1-z1>3)||(x1-z1==3 && x2-z2>0)||(x1-z1==0 && x2-z2<30)||(x1-z1<0)){
-          alert("Vui lòng chọn thời gian đặt bàn phù hợp, nhà hàng chúng tôi quy định đặt bàn trong khoảng thời gian từ 30'-3h!!!");
+          var l="Vui lòng chọn thời gian đặt bàn phù hợp, nhà hàng chúng tôi quy định đặt bàn trong khoảng thời gian từ 30'-3h!";
+          Swal.fire({
+		  icon: 'error',
+	      title: 'Oops...',
+		  text: l,
+          customClass: 'swal-wide',
+		  timer: 5000
+		  })
           document.getElementById("time1").value=null;
       }
   }
   function setMin()
   { 
-    if(d2==document.getElementById("dateOrder").value)
+    if(d2==document.getElementById("dateOrder").value)  
     {
           var hour1 = d1.getHours();
           var minute1 = d1.getMinutes();
@@ -274,14 +322,26 @@
         var d=document.getElementById("time").value;
         var min=document.getElementById("time").min;
         var max=document.getElementById("time").max;
-        if (date=="") { //quy tắc 1
-            alert("Vui lòng chọn ngày đặt bàn");
-            $(document).off('click.once');
+        if (date=="") {
+            Swal.fire({
+		      icon: 'error',
+	          title: 'Oops...',
+              customClass: 'swal-wide',
+		      text: 'Vui lòng chọn ngày đặt bàn!',
+		      timer: 2000
+		      })
             return;
         }
         if(d<min || d>max)
         {
-            alert("Vui lòng chọn thời gian bắt đầu đặt bàn trong khoảng thời gian "+min.substring(0,2)+"h"+min.substring(2,5)+"'-23h:00'");
+            var k="Vui lòng chọn thời gian bắt đầu đặt bàn trong khoảng thời gian "+min.substring(0,2)+"h"+min.substring(2,5)+"'-23h:00'";
+            Swal.fire({
+		      icon: 'error',
+	          title: 'Oops...',
+		      text: k,
+              customClass: 'swal-wide',
+		      timer: 5000
+		      })
             document.getElementById("time").value=null;
             return;
         }

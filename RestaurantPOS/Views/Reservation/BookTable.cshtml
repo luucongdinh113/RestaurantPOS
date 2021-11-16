@@ -20,7 +20,7 @@
     <div class="row">
       <!-- reservation form -->
       <div class="col-md-6 col-md-offset-1 col-sm-10 col-sm-offset-1">
-        <form class="reserve-form row" asp-controller="Reservation" asp-action="BookTable">
+        <form class="reserve-form row" asp-controller="Reservation" asp-action="BookTable" onsubmit="return kiemtra()" name="frmreservation">
           <div class="section-header text-center">
             <h4 class="sub-title">Đặt trước</h4>
             <h2 class="title white-text">Bàn tại nhà hàng</h2>
@@ -32,15 +32,13 @@
                placeholder="dd/mm/yyyy" id="dateOrder"
                value=""
                name="booktableinfo.orderDate"
-               required=""
                min=""
-               required
                onchange="setMin()"
                />
             </div>
             <div class="form-group">
                   <label for="number">Số lượng khách:</label>
-                  <select class="input khach" id="number" name="booktableinfo.People" required>
+                  <select class="input khach" id="number" name="booktableinfo.People">
                       <option value="" selected disabled hidden>Chọn số lượng khách</option>
                       <option value="1" >1 người</option>
                       <option value="2" >2 người</option>
@@ -64,7 +62,6 @@
                     id="time"
                     value=""
                     name="booktableinfo.From"
-                    required=""
                     max="23:00"
                     onchange="setMinTime()"
                   />
@@ -76,7 +73,7 @@
                          placeholder="hh:mm"
                          id="time1"
                          name="booktableinfo.To"
-                         required
+                         onchange="Alert()"
                   />
                   <span class="validity"></span>
               </div>
@@ -204,8 +201,51 @@
   if (m1 < 10) m1 = "0" + m1;
   var dt1 = d1.getDate();
   if (dt1 < 10) dt1 = "0" + dt1;
+  var h=d1.getHours();
+  if(h>=23 ) dt1+=1;
   var d2 = y1 + "-" + m1 + "-" + dt1;
   document.getElementById("dateOrder").min = d2;
+  function kiemtra(){
+    var d = document.getElementById("dateOrder").value;
+    var t1= document.getElementById("time").value;
+    var t2= document.getElementById("time1").value;
+    var q= document.getElementById("number").value;
+    if (d=="") { //quy tắc 1
+        alert("Vui lòng chọn ngày đặt bàn");
+        return false;
+    }
+    if (t1=="") { //quy tắc 1
+         alert("Vui lòng chọn thời gian bắt dầu đặt bàn");
+        return false;
+    }
+    if (t2=="") { //quy tắc 1
+       alert("Vui lòng chọn thời gian kết thúc đặt bàn");
+        return false;
+    }
+    if (q=="") { //quy tắc 1
+       alert("Vui lòng chọn số lượng khách cho bàn sẽ đặt");
+        return false;
+    }
+    return true;
+  }
+  function Alert(){
+      var z=document.getElementById("time").value;
+      if(z=="")
+      {
+          alert("Vui lòng chọn thời gian bắt đầu đặt bàn");
+          document.getElementById("time1").value=null;
+          return;
+      }
+      var z1=Number(z.substring(0,2));
+      var z2=Number(z.substring(3,5));
+      var x=document.getElementById("time1").value;
+      var x1=Number(x.substring(0,2));
+      var x2=Number(x.substring(3,5));
+      if((x1-z1>3)||(x1-z1==3 && x2-z2>0)||(x1-z1==0 && x2-z2<30)||(x1-z1<0)){
+          alert("Vui lòng chọn thời gian đặt bàn phù hợp, nhà hàng chúng tôi quy định đặt bàn trong khoảng thời gian từ 30'-3h!!!");
+          document.getElementById("time1").value=null;
+      }
+  }
   function setMin()
   { 
     if(d2==document.getElementById("dateOrder").value)
@@ -218,15 +258,33 @@
               if (minute1 < 10) minute1 = "0" + minute1;    
               var t2=hour1 + ":" + minute1;
               document.getElementById("time").min=t2;
+              if (hour1==23) document.getElementById("time").min="23:00";
           }
           else document.getElementById("time").min="08:00";
     }
     else document.getElementById("time").min="08:00";
+     var d=document.getElementById("time").value;
+     var min=document.getElementById("time").min;
+     var max=document.getElementById("time").max;
+    if(d<min || d>max) document.getElementById("time").value=null;
   }
   function setMinTime()
   {
-      document.getElementById("time1").min=document.getElementById("time").value;
-      var d=document.getElementById("time").value;
+        var date = document.getElementById("dateOrder").value;
+        var d=document.getElementById("time").value;
+        var min=document.getElementById("time").min;
+        var max=document.getElementById("time").max;
+        if (date=="") { //quy tắc 1
+            alert("Vui lòng chọn ngày đặt bàn");
+            $(document).off('click.once');
+            return;
+        }
+        if(d<min || d>max)
+        {
+            alert("Vui lòng chọn thời gian bắt đầu đặt bàn trong khoảng thời gian "+min.substring(0,2)+"h"+min.substring(2,5)+"'-23h:00'");
+            document.getElementById("time").value=null;
+            return;
+        }
       var d1=Number(d.substring(0,2));
       var d2=Number(d.substring(3,5));
       if(d1<20 ||(d1==20 && d2<30)) document.getElementById("time1").max=(d1+3)+d.substring(2, 5);
@@ -243,5 +301,6 @@
       if(d1<10) d1="0"+d1;
       document.getElementById("time1").min=d1+":"+d2;
   }
+
 </script>
 }

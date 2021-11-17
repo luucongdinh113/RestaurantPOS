@@ -28,67 +28,66 @@
       <!-- reservation form -->
       <div class="col-md-6 col-md-offset-1 col-sm-10 col-sm-offset-1">
         <form class="reserve-form row" asp-controller="Reservation" asp-action="BookTable" onsubmit="return kiemtra()" name="frmreservation">
-          <div class="section-header text-center">
-            <h4 class="sub-title">Đặt trước</h4>
-            <h2 class="title white-text">Bàn tại nhà hàng</h2>
-          </div>
-          <div class="col-md-6">
-            <div class="form-group">
-              <label for="date">Ngày:</label>
-              <input class="input set-today" type="date"
-               placeholder="dd/mm/yyyy" id="dateOrder"
-               value=""
-               name="booktableinfo.orderDate"
-               min=""
-               onchange="setMin()"
-               />
-            </div>
-            <div class="form-group">
-                  <label for="number">Số lượng khách:</label>
-                  <select class="input khach" id="number" name="booktableinfo.People">
-                      <option value="" selected disabled hidden>Chọn số lượng khách</option>
-                      <option value="1" >1 người</option>
-                      <option value="2" >2 người</option>
-                      <option value="3" >3 người</option>
-                      <option value="4" >4 người</option>
-                      <option value="5" >5 người</option>
-                      <option value="6" >6 người</option>
-                      <option value="7" >7 người</option>
-                      <option value="8" >8 người</option>
-                      <option value="9" >9 người</option>
-                      <option value="9" >10 người</option>
-                  </select>
-             </div>
-          </div>
-          <div class="col-md-6">
-              <div class="form-group">
-                  <label for="time">Từ:</label>
-                  <input
-                    class="input"
-                    type="time"
-                    placeholder="hh:mm"
-                    id="time"
-                    value=""
-                    name="booktableinfo.From"
-                    max="23:00"
-                    onchange="setMinTime()"
-                  />
+                             <div class="section-header text-center">
+                                <h4 class="sub-title">Đặt trước</h4>
+                                <h2 class="title white-text">Bàn tại nhà hàng</h2>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="date">Ngày:</label>
+                                    <input class="input set-today" type="date"
+                               placeholder="dd/mm/yyyy" id="dateOrder"
+                               name="booktableinfo.orderDate"
+                               min=""
+                               onchange="setMin()"
+                               />
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="number">Số lượng khách:</label>
+                                                    <select class="input khach" id="number" name="booktableinfo.People">
+                                                        <option value="" selected disabled hidden>Chọn số lượng khách</option>
+                                                        <option value="1" >1 người</option>
+                                                        <option value="2" >2 người</option>
+                                                        <option value="3" >3 người</option>
+                                                        <option value="4" >4 người</option>
+                                                        <option value="5" >5 người</option>
+                                                        <option value="6" >6 người</option>
+                                                        <option value="7" >7 người</option>
+                                                        <option value="8" >8 người</option>
+                                                        <option value="9" >9 người</option>
+                                                        <option value="10" >10 người</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                  <label for="time">Từ:</label>
+                                  <input
+                                    class="input"
+                                    type="time"
+                                    placeholder="hh:mm"
+                                    id="time"
+                                    value=""
+                                    name="booktableinfo.From"
+                                    max="23:00"
+                                    onchange="setMinTime()"
+                                  />
+                              </div>
+                              <div class="form-group">
+                                  <label for="time">Đến:</label>
+                                  <input class="input"
+                                         type="time"
+                                         placeholder="hh:mm"
+                                         id="time1"
+                                         name="booktableinfo.To"
+                                         onchange="Alert()"
+                                  />
+                                  <span class="validity"></span>
+                              </div>
+                          </div>
+              <div class="col-md-12 text-center">
+                <button class="main-button" type="submit" name="booktableinfo.Type" value="search">Tìm kiếm</button>
               </div>
-              <div class="form-group">
-                  <label for="time">Đến:</label>
-                  <input class="input"
-                         type="time"
-                         placeholder="hh:mm"
-                         id="time1"
-                         name="booktableinfo.To"
-                         onchange="Alert()"
-                  />
-                  <span class="validity"></span>
-              </div>
-          </div>
-          <div class="col-md-12 text-center">
-            <button class="main-button" type="submit" name="booktableinfo.Type" value="search">Tìm kiếm</button>
-          </div>
         </form>
       </div>
       <!-- /reservation form -->
@@ -158,7 +157,7 @@
             <tbody>
             @{
                             int i = 1;
-                            if (Model.listtable != null)
+                            if (Model!=null && Model.listtable != null)
                             {
                                 if(Model.listtable.Count>0)
                                 foreach (var Data in Model.listtable)
@@ -171,7 +170,7 @@
                                         <td>@Data.To.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
                                         <td>Trống</td>
                                         <td>
-                                            <form asp-controller="Reservation" asp-action="BookTable" method="post" onsubmit="return confirm('Xác nhận đặt bàn!!!');">
+                                            <form asp-controller="Reservation" asp-action="BookTable" method="post" onsubmit="return confirm('Xác nhận đặt bàn?');">
                                                 <input type="hidden" value="@Data.TableId" name="booktableinfo.TableId" />
                                                 <input type="hidden" value="@Data.From" name="booktableinfo.From" />
                                                 <input type="hidden" value="@Data.To" name="booktableinfo.To" />
@@ -183,14 +182,14 @@
                                 else
                                 {
                                 <tr>
-                                    <td colspan="7" class="text-center">Không có bàn trống</td>
+                                    <td colspan="7" class="text-center">Xin lỗi quý khách, thời điểm @(Model.From.ToLocalTime().ToString("dd/MM/yyyy HH:mm")) - @(Model.To.ToLocalTime().ToString("dd/MM/yyyy HH:mm")) đã hết bàn trống cho đủ @(Model.PeopleCount) khách!</td>
                                 </tr>
                                 } 
                             }
                             else
                             {
                                 <tr>
-                                    <td colspan="7" class="text-center">Không có bàn trống</td>
+                                    <td colspan="7" class="text-center">Quý khách chọn thời gian đặt bàn bên trên!</td>
                                 </tr>
                             } 
                         }
@@ -212,10 +211,14 @@
   var dt1 = d1.getDate();
   if (dt1 < 10) dt1 = "0" + dt1;
   var h=d1.getHours();
-  if(h>=23 )dt1+=1;
-  var d3 = y1 + "-" + m1 + "-" + dt1;
-  document.getElementById("dateOrder").min = d3;
-  var d2 =y1 + "-" + m1 + "-" + (dt1-1);
+  var d2 = y1 + "-" + m1 + "-" + dt1;
+  var a=true;
+  document.getElementById("dateOrder").min = d2;
+  if(h>23){
+      a=false;
+      d2 = y1 + "-" + m1 + "-" + (dt1+1);
+      document.getElementById("dateOrder").min = d2;
+  }
   function kiemtra(){
     var d = document.getElementById("dateOrder").value;
     var t1= document.getElementById("time").value;
@@ -296,7 +299,7 @@
   }
   function setMin()
   { 
-    if(d2==document.getElementById("dateOrder").value)  
+    if(d2==document.getElementById("dateOrder").value && a)  
     {
           var hour1 = d1.getHours();
           var minute1 = d1.getMinutes();
@@ -360,7 +363,8 @@
       else d2=d2+30;
       if(d1<10) d1="0"+d1;
       document.getElementById("time1").min=d1+":"+d2;
+      var x=document.getElementById("time1").value;
+      if(x!="") Alert();
   }
-
 </script>
 }

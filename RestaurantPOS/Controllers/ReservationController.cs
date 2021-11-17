@@ -44,6 +44,9 @@ namespace RestaurantManagement.Controllers
                 {
                     listtable = await _reservationService.GetAllTableEmptyAsync(bookTableInfo.From, bookTableInfo.To, bookTableInfo.People)
                 };
+                table.From = bookTableInfo.From;
+                table.To = bookTableInfo.To;
+                table.PeopleCount = bookTableInfo.People;
                 return View(table);
             }    
            if(bookTableInfo.Type=="book")
@@ -53,7 +56,7 @@ namespace RestaurantManagement.Controllers
                 await _reservationService.BookTableAsync(User, bookTableInfo);
                 return RedirectToAction("TableOrderedHistory", "Home");
             }
-            return View();
+            return View(new ListBookInfoViewModel());
         }
     }
 }

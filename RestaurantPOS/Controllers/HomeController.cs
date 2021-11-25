@@ -40,6 +40,7 @@ namespace RestaurantPOS.Controllers
 
             if (!loginSucess)
             {
+                loginViewModel.ErrorMessage="Tài khoản không tồn tại";
                 return View(loginViewModel);
             }
 
@@ -63,6 +64,7 @@ namespace RestaurantPOS.Controllers
 
             if (!registerSucess)
             {
+                registerViewModel.ErrorMessage = "Tài khoản đã tồn tại";
                 return View(registerViewModel);
             }
 

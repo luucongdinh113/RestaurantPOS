@@ -1,4 +1,4 @@
-﻿using RestaurantManagement.Models;
+﻿using RestaurantPos.Models;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;

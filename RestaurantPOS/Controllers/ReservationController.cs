@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RestaurantManagement.Models;
+using RestaurantPos.Models;
 using RestaurantManagement.Services;
 using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace RestaurantManagement.Controllers

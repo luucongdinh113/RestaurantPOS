@@ -123,10 +123,10 @@ namespace RestaurantPOS.Controllers
             await _customerService.UpdatePaymentMethodAsync(User, billPaymentVM);
             return RedirectToAction("PaymentHistory", "Home");
         }
-
+ 
         public async Task<IActionResult> PaymentHistory()
         {
-            if (!User.Identity.IsAuthenticated)
+            if (!User.Identity.IsAuthenticated)                     
             {
                 return RedirectToAction("Login", "Home");
             }

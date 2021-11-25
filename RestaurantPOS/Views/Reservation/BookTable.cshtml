@@ -1,4 +1,8 @@
-﻿@using RestaurantManagement.Models
+﻿@using RestaurantPos.Models
+@using Microsoft.AspNetCore.Identity
+@using RestaurantPOS.Data.Entities
+@inject SignInManager<Customer> SignInManager
+@inject UserManager<Customer> UserManager
 @section CustomCss{
 <!-- Custom stlylesheet -->
 <link type="text/css" rel="stylesheet" href="/css/reservation.css" />
@@ -13,6 +17,9 @@
 </style>
 }
 @model ListBookInfoViewModel
+@{
+ if (!SignInManager.IsSignedIn(User) || (await UserManager.GetUserAsync(User)).VIP)
+ {
 <div id="reservation" class="section">
   <!-- Backgound Image -->
   <div
@@ -200,6 +207,14 @@
     </div>
   </div>
 </div>
+
+    }
+    else
+    {
+       <div class="text-center" style="color:black;font-weight: 700;margin-bottom: 100px;margin-top: 100px;margin-left: 70px;margin-right: 70px;font-size: 22px;">Xin lỗi quý khách, tính năng này chỉ dành cho khách hàng đã thanh toán hóa đơn
+       <br>trên 10 lần tại nhà hàng chúng tôi!!!</div>
+    }
+}
 @section Scripts{
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.10.1/dist/sweetalert2.all.min.js"></script>
 	<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@10.10.1/dist/sweetalert2.min.css'>

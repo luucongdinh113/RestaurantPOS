@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RestaurantManagement.Models
+namespace RestaurantPos.Models
 {
     public class BookTableInfoViewModel
     {

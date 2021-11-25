@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RestaurantManagement.Models
+namespace RestaurantPos.Models
 {
     public class ListBookInfoViewModel
     {

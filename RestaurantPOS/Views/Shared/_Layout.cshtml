@@ -87,13 +87,8 @@
                     <li><a href=@Url.Action("Index","Home")>Trang chủ</a></li>
                     <li><a href="@Url.Action("MenuFood","Menu")">Menu</a></li>
                     <li><a href="@Url.Action("Payment", "Home")">Thanh toán</a></li>
-                    @{
-                        if (!SignInManager.IsSignedIn(User) || (await UserManager.GetUserAsync(User)).VIP)
-                        {
-                            <li><a href="@Url.Action("BookTable","Reservation")">Đặt bàn</a></li>
-                            <li><a href="@Url.Action("TableOrderedHistory", "Home")">Lịch sử đặt bàn</a></li>
-                        }
-                    }
+                    <li><a href="@Url.Action("BookTable","Reservation")">Đặt bàn</a></li>
+                    <li><a href="@Url.Action("TableOrderedHistory", "Home")">Lịch sử đặt bàn</a></li>
                     <li><a href="@Url.Action("PaymentHistory", "Home")">Lịch sử thanh toán</a></li>
                 </ul>
                 <!-- /NAV -->
